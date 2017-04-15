@@ -17,6 +17,9 @@ class TweetDetailsViewController: UIViewController {
     @IBOutlet weak var favouritesLabel: UILabel!
     @IBOutlet weak var profileImage: UIImageView!
     
+    @IBOutlet weak var favouriteImage: UIImageView!
+    @IBOutlet weak var replyImage: UIImageView!
+    @IBOutlet weak var retweetImage: UIImageView!
     
     var tweetDetails: Tweet!
     
@@ -29,24 +32,55 @@ class TweetDetailsViewController: UIViewController {
             retweetLabel.text = "\(tweetDetails.retweetCount) RETWEETS"
             favouritesLabel.text = "\(tweetDetails.favouritesCount) FAVOURITES"
             profileImage.setImageWith((tweetDetails.user?.profileURL)!)
+            
+            let favouriteTap = UITapGestureRecognizer(target: self, action: #selector(TweetDetailsViewController.favouriteTapDetected))
+            favouriteTap.numberOfTapsRequired = 1 // you can change this value
+            favouriteImage.isUserInteractionEnabled = true
+            favouriteImage.addGestureRecognizer(favouriteTap)
+            
+            let replyTap = UITapGestureRecognizer(target: self, action: #selector(TweetDetailsViewController.replyTapDetected))
+            replyTap.numberOfTapsRequired = 1 // you can change this value
+            replyImage.isUserInteractionEnabled = true
+            replyImage.addGestureRecognizer(replyTap)
+            
+            let retweetTap = UITapGestureRecognizer(target: self, action: #selector(TweetDetailsViewController.retweetTapDetected))
+            retweetTap.numberOfTapsRequired = 1 // you can change this value
+            retweetImage.isUserInteractionEnabled = true
+            retweetImage.addGestureRecognizer(retweetTap)
+            
         }
         // Do any additional setup after loading the view.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    //Action
+    func favouriteTapDetected() {
+        print("Imageview Clicked")
+        let id = tweetDetails.id
+        let client = TwitterClient.sharedInstance
+        client.favouriteTweet(id: id, success: {
+            
+        }, failure: { (error: Error) in
+            print(error.localizedDescription)
+        })
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    //Action
+    func replyTapDetected() {
+        print("Imageview Clicked")
     }
-    */
-
+    
+    //Action
+    func retweetTapDetected() {
+        print("Imageview Clicked")
+        let id = tweetDetails.id
+        let client = TwitterClient.sharedInstance
+        client.retweetTweet(id: id, success: {
+            
+        }, failure: { (error: Error) in
+            print(error.localizedDescription)
+        })
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    }
 }
