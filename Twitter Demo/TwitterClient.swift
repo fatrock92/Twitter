@@ -52,6 +52,7 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     func currentAccount(success: @escaping (User) -> (), failure: @escaping (Error) -> ()) {
         get("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            print(response)
             let user: User = User(dictionary: response as! NSDictionary)
             success(user)
         }, failure: { (task: URLSessionDataTask?, error: Error) in
@@ -64,6 +65,39 @@ class TwitterClient: BDBOAuth1SessionManager {
             let dictionaries: [NSDictionary] = response as! [NSDictionary]
             let tweets: [Tweet] = Tweet.tweetsWithArray(dictionaries: dictionaries)
             success(tweets)
+        }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
+            failure(error)
+        })
+    }
+    
+    func getMentions(success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
+        get("1.1/statuses/mentions_timeline.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            let dictionaries: [NSDictionary] = response as! [NSDictionary]
+            let tweets: [Tweet] = Tweet.tweetsWithArray(dictionaries: dictionaries)
+            success(tweets)
+        }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
+            failure(error)
+        })
+    }
+    
+    func getUserTimeline(id: Int64, success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
+        let params: Dictionary = ["user_id": id]
+        
+        get("1.1/statuses/user_timeline.json", parameters: params, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            let dictionaries: [NSDictionary] = response as! [NSDictionary]
+            let tweets: [Tweet] = Tweet.tweetsWithArray(dictionaries: dictionaries)
+            success(tweets)
+        }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
+            failure(error)
+        })
+    }
+    
+    func getUserInfo(id: Int64, success: @escaping (User) -> (), failure: @escaping (Error) -> ()) {
+        let params: Dictionary = ["user_id": id]
+        
+        get("1.1/users/show.json", parameters: params, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            let user: User = User(dictionary: response as! NSDictionary)
+            success(user)
         }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
             failure(error)
         })

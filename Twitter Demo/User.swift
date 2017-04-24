@@ -12,18 +12,32 @@ class User: NSObject {
     var name: String?
     var screenName: String?
     var profileURL: URL?
+    var profileBannerURL: URL?
     var tagline: String?
     var userDictionary: NSDictionary?
+    var tweets: Int = 0
+    var following: Int = 0
+    var followers: Int = 0
+    var userID: Int64 = 0
     
     init(dictionary: NSDictionary) {
         userDictionary = dictionary
         name = dictionary["name"] as? String
         screenName = dictionary["screen_name"] as? String
         tagline = dictionary["description"] as? String
+        followers = (dictionary["followers_count"] as? Int) ?? 0
+        tweets = (dictionary["statuses_count"] as? Int) ?? 0
+        following = (dictionary["friends_count"] as? Int) ?? 0
+        userID = (dictionary["id"] as? Int64) ?? 0
         
         let profileURLString = dictionary["profile_image_url_https"] as? String
         if let profileURLString = profileURLString {
             profileURL = URL(string: profileURLString)
+        }
+        
+        let profileBannerURLString = dictionary["profile_banner_url"] as? String
+        if let profileBannerURLString = profileBannerURLString {
+            profileBannerURL = URL(string: profileBannerURLString)
         }
     }
     
@@ -38,6 +52,7 @@ class User: NSObject {
                     _currentUser = User(dictionary: dict as! NSDictionary)
                 }
             }
+            print(_currentUser ?? "")
             return _currentUser
         }
         set(user) {

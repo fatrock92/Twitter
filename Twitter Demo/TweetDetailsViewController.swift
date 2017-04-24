@@ -48,6 +48,11 @@ class TweetDetailsViewController: UIViewController {
             retweetImage.isUserInteractionEnabled = true
             retweetImage.addGestureRecognizer(retweetTap)
             
+            let profileTap = UITapGestureRecognizer(target: self, action: #selector(TweetDetailsViewController.profileImageTapDetected))
+            profileTap.numberOfTapsRequired = 1 // you can change this value
+            profileImage.isUserInteractionEnabled = true
+            profileImage.addGestureRecognizer(profileTap)
+            
         }
         // Do any additional setup after loading the view.
     }
@@ -79,6 +84,15 @@ class TweetDetailsViewController: UIViewController {
         }, failure: { (error: Error) in
             print(error.localizedDescription)
         })
+    }
+    
+    func profileImageTapDetected() {
+        print("Imageview Clicked")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let profileVC = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        profileVC.userID = (tweetDetails.user?.userID) ?? 0
+        self.navigationController?.pushViewController(profileVC, animated: true)
+
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
