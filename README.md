@@ -1,4 +1,4 @@
-# Project 4 - *Name of App Here*
+# Project 4 - *Twitter v2*
 
 Time spent: **8** hours spent in total
 
